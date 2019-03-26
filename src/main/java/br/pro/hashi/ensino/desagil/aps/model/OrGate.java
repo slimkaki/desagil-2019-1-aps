@@ -17,7 +17,7 @@ public class OrGate extends Gate {
 
     @Override
     public boolean read() {
-        return false;
+        return nand3.read();
     }
 
     @Override
