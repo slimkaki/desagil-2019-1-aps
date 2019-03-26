@@ -4,7 +4,8 @@ public class Switch implements SignalEmitter {
     private boolean signal;
 
     public Switch() {
-        signal = false; }
+        signal = false;
+    }
 
     public void turnOn() {
         signal = true;

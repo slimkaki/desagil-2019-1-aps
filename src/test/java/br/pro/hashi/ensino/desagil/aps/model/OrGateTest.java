@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class OrGateTest {
-    private     OrGate gate;
+    private OrGate gate;
 
     private void build(boolean a, boolean b) {
         gate = new OrGate();

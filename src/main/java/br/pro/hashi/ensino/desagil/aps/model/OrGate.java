@@ -25,11 +25,11 @@ public class OrGate extends Gate {
         if (inputPin != 0 && inputPin != 1) {
             throw new IndexOutOfBoundsException(inputPin);
         }
-        if (inputPin == 0){
+        if (inputPin == 0) {
             nand1.connect(0, emitter);
             nand1.connect(1, emitter);
         }
-        if (inputPin == 1){
+        if (inputPin == 1) {
             nand2.connect(0, emitter);
             nand2.connect(1, emitter);
         }

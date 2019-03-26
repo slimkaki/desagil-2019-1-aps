@@ -4,7 +4,7 @@ public class AndGate extends Gate {
     private final NandGate nand1;
     private final NandGate nand2;
 
-    public AndGate(){
+    public AndGate() {
         super(2);
 
         nand1 = new NandGate();
@@ -28,11 +28,11 @@ public class AndGate extends Gate {
             throw new IndexOutOfBoundsException(inputPin);
         }
 
-        if (inputPin == 1){
+        if (inputPin == 1) {
             nand1.connect(1, emitter);
         }
 
-        if (inputPin == 0){
+        if (inputPin == 0) {
             nand1.connect(0, emitter);
         }
 
