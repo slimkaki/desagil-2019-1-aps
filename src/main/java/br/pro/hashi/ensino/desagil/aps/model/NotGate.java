@@ -6,16 +6,14 @@ public class NotGate extends Gate {
 
     public NotGate() {
         super("NOT", 1);
-
         nand = new NandGate();
-    }
 
+    }
 
     @Override
     public boolean read() {
         return nand.read();
     }
-
 
     @Override
     public void connect(int inputPin, SignalEmitter emitter) {
