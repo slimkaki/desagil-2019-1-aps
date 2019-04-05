@@ -4,84 +4,88 @@ import br.pro.hashi.ensino.desagil.aps.model.Gate;
 import br.pro.hashi.ensino.desagil.aps.model.Switch;
 
 import javax.swing.*;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+public class GateView extends JPanel implements ActionListener {
 
-public class GateView extends JPanel implements ItemListener {
-
+    // iniciando as variáveis a serem utilizadas
     private final Gate gate;
+    private final JCheckBox checkInput1;
+    private final JCheckBox checkInput2;
+    private final JCheckBox result;
 
-    private final JCheckBox[] entrada;
-    private final JCheckBox saida;
+    private final Switch switch1 = new Switch();
+    private final Switch switch2 = new Switch();
 
-    private final int[] pinos;
+    public GateView(Gate gate) {
+        this.gate = gate; // Porta lógica escolhida
 
-    private final Switch[] sinal;
+        checkInput1 = new JCheckBox("Entrada 1"); // CheckBox de entrada de sinal 1
+        checkInput2 = new JCheckBox("Entrada 2"); // CheckBox de entrada de sinal 2
+        result = new JCheckBox("Saída"); // CheckBox com o resultado dos sinais
 
+        // iniciando ambas entradas como falsas, logo ambas são zero inicialmente!
+        checkInput1.setSelected(false);
+        checkInput2.setSelected(false);
 
-    public GateView(Gate gate){
+        // nomes que serão os identificadores de cada um dos campos
+        JLabel checkLabel1 = new JLabel("Entradas:");
+        JLabel checkLabel2 = new JLabel("Entrada:");
+        JLabel resultLabel = new JLabel("Saída:");
 
-        this.gate = gate;
-
-        entrada = new JCheckBox[this.gate.getInputSize()];
-        saida = new JCheckBox();
-
-        pinos = new int[this.gate.getInputSize()];
-
-        sinal = new Switch[this.gate.getInputSize()];
-
-        JLabel in = new JLabel("Entrada");
-        JLabel out = new JLabel("Saída");
-
+        // cria o layout como uma janela em forma de caixa
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        add(in);
+        // por conta do NotGate só possuir 1 switch, precisamos criar uma condição
+        if (this.gate.getInputSize() == 1) {
+            // cria a ordem da disposição dos elementos na tela
+            add(checkLabel2);
+            add(checkInput1);
+            add(resultLabel);
+            add(result);
 
-        for (int i = 0; i < this.gate.getInputSize(); i += 1){
+            // faz a conexão da entrada no gate especificado
+            this.gate.connect(0, switch1);
 
-            entrada[i] = new JCheckBox("entrada" + i);
-            sinal[i] = new Switch();
+        } else {
+            // cria a ordem da disposição dos elementos na tela
+            add(checkLabel1);
+            add(checkInput1);
+            add(checkInput2);
+            add(resultLabel);
+            add(result);
 
-            pinos[i] = i;
-
-            gate.connect(i, sinal[i]);
-
-            add(entrada[i]);
+            // faz a conexão da entrada no gate especificado
+            this.gate.connect(0, switch1);
+            this.gate.connect(1, switch2);
         }
 
-        add(out);
-        add(saida);
+        // permite que os check boxes dos inputs sejam marcados ou desmarcados
+        checkInput1.addActionListener(this);
+        checkInput2.addActionListener(this);
 
-        saida.setEnabled(false);
+        // impossibilita a mudança do estado do checkbox do resultado pela interação do usuário
+        result.setEnabled(false);
 
-        add(out);
-        add(saida);
-
-        out.setEnabled(false);
+        // roda a função que checa o caso e retorna a saída
         update();
-
     }
 
-    public void update(){
-        boolean check;
-
-        for (int s: pinos){
-
-            check = entrada[s].isSelected();
-
-            if (check){
-                sinal[s].turnOn();
+    public void update() {
+            if (checkInput1.isSelected()) {
+                switch1.turnOn();
+            } else {
+                switch1.turnOff();
             }
-            else{
-                sinal[s].turnOff();
+            if (checkInput2.isSelected()){
+                switch2.turnOn();
             }
+            result.setSelected(this.gate.read());
         }
-    }
 
     @Override
-    public void itemStateChanged(ItemEvent e) {
+    public void actionPerformed(ActionEvent e) {
         update();
-
     }
 }
