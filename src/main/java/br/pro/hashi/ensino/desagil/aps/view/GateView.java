@@ -7,81 +7,67 @@ import javax.swing.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-
 public class GateView extends JPanel implements ItemListener {
-
+    private final Switch[] switches;
     private final Gate gate;
 
-    private final JCheckBox[] entrada;
-    private final JCheckBox saida;
+    private final JCheckBox[] inputBoxes;
+    private final JCheckBox outputBox;
 
-    private final int[] pinos;
-
-    private final Switch[] sinal;
-
-
-    public GateView(Gate gate){
-
+    public GateView(Gate gate) {
         this.gate = gate;
 
-        entrada = new JCheckBox[this.gate.getInputSize()];
-        saida = new JCheckBox();
+        int inputSize = gate.getInputSize();
 
-        pinos = new int[this.gate.getInputSize()];
+        switches = new Switch[inputSize];
+        inputBoxes = new JCheckBox[inputSize];
 
-        sinal = new Switch[this.gate.getInputSize()];
+        for (int i = 0; i < inputSize; i++) {
+            switches[i] = new Switch();
+            inputBoxes[i] = new JCheckBox();
 
-        JLabel in = new JLabel("Entrada");
-        JLabel out = new JLabel("Saída");
+            gate.connect(i, switches[i]);
+        }
+
+        outputBox = new JCheckBox();
+
+        JLabel inputLabel = new JLabel("Input");
+        JLabel outputLabel = new JLabel("Output");
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        add(in);
+        add(inputLabel);
+        for (JCheckBox inputBox : inputBoxes) {
+            add(inputBox);
+        }
+        add(outputLabel);
+        add(outputBox);
 
-        for (int i = 0; i < this.gate.getInputSize(); i += 1){
-
-            entrada[i] = new JCheckBox("entrada" + i);
-            sinal[i] = new Switch();
-
-            pinos[i] = i;
-
-            gate.connect(i, sinal[i]);
-
-            add(entrada[i]);
+        for (JCheckBox inputBox : inputBoxes) {
+            inputBox.addItemListener(this);
         }
 
-        add(out);
-        add(saida);
+        outputBox.setEnabled(false);
 
-        saida.setEnabled(false);
-
-        add(out);
-        add(saida);
-
-        out.setEnabled(false);
         update();
-
     }
 
-    public void update(){
-        boolean check;
-
-        for (int s: pinos){
-
-            check = entrada[s].isSelected();
-
-            if (check){
-                sinal[s].turnOn();
-            }
-            else{
-                sinal[s].turnOff();
+    private void update() {
+        for (int i = 0; i < gate.getInputSize(); i++) {
+            if (inputBoxes[i].isSelected()) {
+                switches[i].turnOn();
+            } else {
+                switches[i].turnOff();
             }
         }
+
+        boolean result = gate.read();
+
+        outputBox.setSelected(result);
     }
 
     @Override
-    public void itemStateChanged(ItemEvent e) {
+    public void itemStateChanged(ItemEvent event) {
         update();
-
     }
 }
