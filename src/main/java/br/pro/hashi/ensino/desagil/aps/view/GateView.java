@@ -27,7 +27,7 @@ public class GateView extends FixedPanel implements ItemListener, MouseListener 
     private int g;
     private int b;
 
-    private Boolean colorIsSetted;
+    private Boolean colorIsSetted; // Usamos um booleano para saber se o usuário já definiu a cor a ser usada
 
     public GateView(Gate gate) {
         super(320, 230); // Mudamos o tamanho da janela inicializada, calculado para caber todas as imagens
@@ -53,17 +53,12 @@ public class GateView extends FixedPanel implements ItemListener, MouseListener 
             gate.connect(i, switches[i]);
         }
 
-        JLabel inputLabel = new JLabel("Input");
-        JLabel outputLabel = new JLabel("Output");
-
-        add(inputLabel, 10, 20, 375, 25);
         if (inputBoxes.length>1){
                 add(inputBoxes[0], 20, 71, 150, 25);
                 add(inputBoxes[1], 20, 131, 150, 25);
         } else {
             add(inputBoxes[0], 20, 98, 150, 25);
         }
-        add(outputLabel);
 
         String name = gate.toString() + ".png";
         URL url = getClass().getClassLoader().getResource(name);
@@ -113,7 +108,7 @@ public class GateView extends FixedPanel implements ItemListener, MouseListener 
         int x = event.getX();
         int y = event.getY();
         if (inputBoxes.length > 1){
-            if (Math.sqrt((x-290)*(x-290) + (y-107)*(y-107)) < 10) {
+            if (Math.sqrt(Math.pow(x-(290+5), 2) + Math.pow(y-(107+5), 2)) < 5) {         // função que calcula um círculo
                 color = JColorChooser.showDialog(this, null, color);
                 this.r = color.getRed();
                 this.g = color.getGreen();
@@ -122,7 +117,7 @@ public class GateView extends FixedPanel implements ItemListener, MouseListener 
                 repaint();
             }
         } else {
-            if (Math.sqrt((x-288)*(x-288) + (y-104)*(y-104)) < 14) {
+            if (Math.sqrt(Math.pow(x-(288+7), 2) + Math.pow(y-(104+7), 2)) < 7) {        // função que calcula um círculo
                 color = JColorChooser.showDialog(this, null, color);
                 this.r = color.getRed();
                 this.g = color.getGreen();
